@@ -1,0 +1,190 @@
+import 'dart:async';
+
+class Time {
+  int customerCount;
+  int hour;
+  String comment;
+
+  Time(this.customerCount, this.hour, this.comment);
+
+  void showData() {
+    print("Hour: $hour\nCustomer count: $customerCount\nComment: $comment");
+  }
+
+  int getCount() => customerCount;
+  int getHour() => hour;
+  String getComment() => comment;
+
+  void setCount(int count) => customerCount = count;
+  void setHour(int hour) => this.hour = hour;
+  void setComment(String comment) => this.comment = comment;
+}
+
+class Storage<T> {
+  List<T> items = [];
+
+  void add(T item) {
+    items.add(item);
+  }
+
+  T get(int index) {
+    return items[index];
+  }
+
+  void showAll() {
+    for (T item in items) {
+      print(item);
+    }
+  }
+
+  // Generic метод фільтрації
+  List<T> filter(bool Function(T) predicate) {
+    List<T> result = [];
+    for (T item in items) {
+      if (predicate(item)) {
+        result.add(item);
+      }
+    }
+    return result;
+  }
+
+  // Generic метод пошуку першого елемента за умовою
+  T? findFirst(bool Function(T) predicate) {
+    for (T item in items) {
+      if (predicate(item)) return item;
+    }
+    return null;
+  }
+}
+
+class RoundTheClockShop {
+  String name;
+  String address;
+
+  RoundTheClockShop(this.name, this.address);
+
+  List<Time> timeRecords = [];
+
+  void showData() {
+    print("Інформація про магазин:");
+    print("Назва: $name\nАдреса: $address\n");
+    print("Записи:");
+    for (Time t in timeRecords) {
+      t.showData();
+      print("");
+    }
+  }
+
+  void add(Time t) {
+    timeRecords.add(t);
+  }
+
+  int generalCustomerCount() {
+    int count = 0;
+    for (Time t in timeRecords) {
+      count += t.getCount();
+    }
+    return count;
+  }
+
+  int lowestCustomersHour() {
+    int lowest = timeRecords[0].getCount();
+    for (Time t in timeRecords) {
+      if (t.getCount() < lowest) {
+        lowest = t.getCount();
+      }
+    }
+    return lowest;
+  }
+
+  List<Time> searchWord(String word) {
+    List<Time> result = [];
+    for (Time t in timeRecords) {
+      if (t.getComment().contains(word)) {
+        result.add(t);
+      }
+    }
+    return result;
+  }
+}
+
+Future<T> createFuture<T>(T Function() computation) {
+  return Future<T>(computation);
+}
+
+Future<T> createDelayedFuture<T>(Duration duration, T Function() computation) {
+  return Future.delayed(duration, computation);
+}
+
+Future<void> runAsyncTasks() async {
+  try {
+    print("\n--- Запуск асинхронних задач ---");
+
+    var result1 = await createFuture<int>(() {
+      print("Обчислення у createFuture...");
+      return 42;
+    });
+    print("Результат createFuture: $result1");
+
+    var result2 = await createDelayedFuture<String>(
+      Duration(seconds: 2),
+      () {
+        print("Обчислення у createDelayedFuture...");
+        return "Hello from Future.delayed!";
+      },
+    );
+    print("Результат createDelayedFuture: $result2");
+
+    print("--- Завершено успішно ---\n");
+  } catch (e) {
+    print("Виникла помилка: $e");
+  }
+}
+
+Future<void> main() async {
+  RoundTheClockShop shop = RoundTheClockShop("ATB", "Somewhere");
+  shop.add(Time(5, 1, "Aboba"));
+  shop.add(Time(1, 2, "Another comment"));
+  shop.add(Time(10, 3, "Bad"));
+  shop.add(Time(9, 4, "Some comment"));
+  shop.add(Time(0, 5, ""));
+  shop.add(Time(11, 6, "Nice"));
+  shop.add(Time(1, 7, "Aboba"));
+
+  shop.showData();
+
+  print("Найменша кількість покупців: ${shop.lowestCustomersHour()}");
+  print("Загальна кількість покупців: ${shop.generalCustomerCount()}");
+
+  List<Time> res = shop.searchWord("Aboba");
+  print("Записів із словом 'Aboba' знайдено: ${res.length}\n");
+
+  for (Time r in res) {
+    r.showData();
+  }
+
+  Storage<Time> storage = Storage<Time>();
+  for (var t in shop.timeRecords) {
+    storage.add(t);
+  }
+
+  print("\nПоказ усіх записів через generic Storage<Time>:");
+  storage.showAll();
+
+  print("\nФільтрація (кількість покупців > 5):");
+  List<Time> filtered = storage.filter((t) => t.getCount() > 5);
+  for (Time t in filtered) {
+    t.showData();
+  }
+
+  print("\nПошук першого запису з коментарем 'Nice':");
+  Time? found = storage.findFirst((t) => t.getComment().contains("Nice"));
+  if (found != null) {
+    found.showData();
+  } else {
+    print("Не знайдено.");
+  }
+
+  // Виконання асинхронних задач
+  await runAsyncTasks();
+}
