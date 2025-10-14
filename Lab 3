@@ -1,0 +1,138 @@
+class Time {
+  int customerCount;
+  int hour;
+  String comment;
+
+  Time(this.customerCount, this.hour, this.comment);
+
+  void showData() {
+    print("Hour: $hour\nCusomer count: $customerCount\nComment: $comment");
+  }
+  
+  int getCount(){
+    return this.customerCount;
+  }
+  
+  int getHour(){
+    return this.hour;
+  }
+  
+  String getComment(){
+    return this.comment;
+  }
+  
+  void setCount(int count){
+    this.customerCount = count;
+  }
+  
+  void setHour(int hour){
+    this.hour = hour;
+  }
+  
+  void setComment(String comment){
+    this.comment = comment;
+  }
+}
+
+
+class RoundTheClockShop{
+  String name;
+  String adress;
+  
+  RoundTheClockShop(this.name, this.adress);
+  
+  List<Time> timeRecords = [];
+  
+  void showData() {
+    print("Інформація про магазинЖ");
+    print("Назва:$name\nАдреса:$adress");
+    print("");
+    print("Записи:");
+    
+    for(Time t in timeRecords){
+      t.showData();
+      print("");
+    }
+  }
+
+  void add(Time t){
+    this.timeRecords.add(t);
+  }
+  
+  Time get(int i){
+    return this.timeRecords[i];
+  }
+  
+  void setName(String name){
+    this.name = name;
+  }
+  
+  void setAdress(String adress){
+    this.adress = adress;
+  }
+  
+  String getAdress(){
+    return this.adress;
+  }
+  String getName(){
+    return this.name;
+  }
+  
+  int generalCustomerCount(){
+    int count = 0;
+    
+    for(Time t in timeRecords){
+      count += t.getCount();
+    }
+    
+    return count;
+  }
+  
+  int lowestCustomersHour(){
+    int lowest = timeRecords[0].getCount();
+    for(Time t in timeRecords){
+      int pretend = t.getCount();
+      if(pretend < lowest){
+        lowest = pretend;
+      }
+    }
+    return lowest;
+  }
+  
+  List<Time> searchWord(String word){
+    List<Time> result = [];
+    for (Time t in timeRecords){
+      if(t.getComment().contains(word)){
+        result.add(t);
+      }
+    }
+    
+    return result;
+  }
+}
+
+
+
+void main(){
+  RoundTheClockShop shop = RoundTheClockShop("ATB", "Somewhere"); 
+  shop.add(Time(5, 1, "Aboba"));
+  shop.add(Time(1, 2, "Another comment"));
+  shop.add(Time(10, 3, "Bad"));
+  shop.add(Time(9, 4, "Some comment"));
+  shop.add(Time(0, 5, ""));
+  shop.add(Time(11, 6, "Nice"));
+  shop.add(Time(1, 7, "Aboba"));
+  
+  shop.showData();
+  shop.lowestCustomersHour();
+  shop.generalCustomerCount();
+  List<Time> res = shop.searchWord("Aboba");
+  int resLen = res.length;
+  print("Записів із словом 'Aboba' знайдено: $resLen\n");
+  
+  for(Time r in res){
+    r.showData();
+  }
+   
+  
+}
