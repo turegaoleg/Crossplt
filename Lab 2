@@ -1,0 +1,80 @@
+abstract class MusicalInstrument {
+  String get name;
+  String get type;
+  void play();
+}
+
+class Percussion implements MusicalInstrument {
+  @override
+  final String name;
+  @override
+  final String type = 'Percussion';
+
+  Percussion(this.name);
+
+  @override
+  void play() {
+    print('$name is playing a rhythmic beat.');
+  }
+
+  @override
+  String toString() {
+    return 'Percussion Instrument: $name';
+  }
+}
+
+class Stringed implements MusicalInstrument {
+  @override
+  final String name;
+  @override
+  final String type = 'Stringed';
+
+  Stringed(this.name);
+
+  @override
+  void play() {
+    print('$name is playing a melodic tune.');
+  }
+
+  @override
+  String toString() {
+    return 'Stringed Instrument: $name';
+  }
+}
+
+class Wind implements MusicalInstrument {
+  @override
+  final String name;
+  @override
+  final String type = 'Wind';
+
+  Wind(this.name);
+
+  @override
+  void play() {
+    print('$name is producing a harmonious sound.');
+  }
+
+  @override
+  String toString() {
+    return 'Wind Instrument: $name';
+  }
+}
+
+void main() {
+  List<MusicalInstrument> orchestra = [
+    Percussion('Drum'),
+    Stringed('Violin'),
+    Wind('Flute'),
+    Percussion('Cymbals'),
+    Stringed('Cello'),
+    Wind('Trumpet'),
+  ];
+
+  print('--- Orchestra Composition ---');
+  for (var instrument in orchestra) {
+    print(instrument.toString());
+    instrument.play();
+    print('');
+  }
+}
