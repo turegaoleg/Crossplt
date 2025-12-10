@@ -1,0 +1,218 @@
+import 'package:flutter/material.dart';
+
+void main() {
+  runApp(MaterialApp(
+    home: UkrainianPoetsApp(),
+    debugShowCheckedModeBanner: false,
+  ));
+}
+
+class UkrainianPoetsApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Українські поети"),
+        backgroundColor: Colors.blue[700],
+      ),
+      body: PoetsList(),
+    );
+  }
+}
+
+class PoetsList extends StatefulWidget {
+  @override
+  _PoetsListState createState() => _PoetsListState();
+}
+
+class _PoetsListState extends State<PoetsList> {
+  // Список українських поетів з ПРЯМИМИ посиланнями на зображення
+  final List<Map<String, String>> poets = [
+    {
+      'name': 'Тарас Шевченко',
+      'years': '1814-1861',
+      'description': 'Великий український поет, письменник, художник, громадський діяч',
+      'famous_work': 'Кобзар',
+      'image': 'https://uk.wikipedia.org/wiki/%D0%A4%D0%B0%D0%B9%D0%BB:Taras_Shevchenko_selfportrait_oil_1840.jpg',
+    },
+    {
+      'name': 'Леся Українка',
+      'years': '1871-1913',
+      'description': 'Видатна українська поетеса, письменниця, перекладачка',
+      'famous_work': 'Лісова пісня',
+      'image': 'https://upload.wikimedia.org/wikipedia/commons/c/c3/Lesya_Ukrayinka_1898.jpg',
+    },
+    {
+      'name': 'Іван Франко',
+      'years': '1856-1916',
+      'description': 'Український письменник, поет, публіцист, перекладач, науковець',
+      'famous_work': 'Захар Беркут',
+      'image': 'https://upload.wikimedia.org/wikipedia/commons/7/7c/Ivan_Franko%2C_1886.jpg',
+    },
+    {
+      'name': 'Ліна Костенко',
+      'years': '1930-2023',
+      'description': 'Українська поетеса, письменниця, перекладачка',
+      'famous_work': 'Маруся Чурай',
+      'image': 'https://upload.wikimedia.org/wikipedia/commons/0/09/Lina_Kostenko.jpg',
+    },
+    {
+      'name': 'Василь Стус',
+      'years': '1938-1985',
+      'description': 'Український поет, перекладач, літературознавець, дисидент',
+      'famous_work': 'Зимові дерева',
+      'image': 'https://upload.wikimedia.org/wikipedia/commons/b/b2/Vasyl_Stus.jpg',
+    },
+    {
+      'name': 'Павло Тичина',
+      'years': '1891-1967',
+      'description': 'Український поет, громадський діяч',
+      'famous_work': 'Сонячні кларнети',
+      'image': 'https://upload.wikimedia.org/wikipedia/commons/5/5f/Pavlo_Tychyna_1927.jpg',
+    },
+    {
+      'name': 'Максим Рильський',
+      'years': '1895-1964',
+      'description': 'Український поет, перекладач, літературознавець',
+      'famous_work': 'Троянди й виноград',
+      'image': 'https://upload.wikimedia.org/wikipedia/commons/a/ab/Maksym_Rylsky_1957.jpg',
+    },
+    {
+      'name': 'Олександр Олесь',
+      'years': '1878-1944',
+      'description': 'Український поет, драматург',
+      'famous_work': 'З журбою радість обнялась',
+      'image': 'https://upload.wikimedia.org/wikipedia/commons/9/99/Olександр_Олесь.jpg',
+    },
+  ];
+
+  int selectedIndex = -1;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: EdgeInsets.all(16),
+          child: Text(
+            selectedIndex == -1
+                ? "Оберіть поета зі списку"
+                : "Обрано: ${poets[selectedIndex]['name']}",
+            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          ),
+        ),
+        Expanded(
+          child: ListView.separated(
+            padding: EdgeInsets.all(8),
+            itemCount: poets.length,
+            separatorBuilder: (BuildContext context, int index) =>
+                Divider(height: 1, color: Colors.blue[200], thickness: 1),
+            itemBuilder: (BuildContext context, int index) {
+              return GestureDetector(
+                onTap: () {
+                  setState(() {
+                    selectedIndex = index;
+                  });
+                },
+                child: Container(
+                  color: index == selectedIndex
+                      ? Colors.blue[50]
+                      : Colors.transparent,
+                  child: ListTile(
+                    contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    // Зображення поета з мережі
+                    leading: ClipRRect(
+                      borderRadius: BorderRadius.circular(8),
+                      child: Image.network(
+                        poets[index]['image']!,
+                        width: 60,
+                        height: 80,
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) {
+                          // Якщо зображення не завантажилось - показуємо іконку
+                          return Container(
+                            width: 60,
+                            height: 80,
+                            decoration: BoxDecoration(
+                              color: Colors.grey[300],
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: Icon(Icons.person, size: 40, color: Colors.grey[600]),
+                          );
+                        },
+                        loadingBuilder: (context, child, loadingProgress) {
+                          // Показуємо індикатор завантаження
+                          if (loadingProgress == null) return child;
+                          return Container(
+                            width: 60,
+                            height: 80,
+                            decoration: BoxDecoration(
+                              color: Colors.grey[200],
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: Center(
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                value: loadingProgress.expectedTotalBytes != null
+                                    ? loadingProgress.cumulativeBytesLoaded /
+                                        loadingProgress.expectedTotalBytes!
+                                    : null,
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                    title: Text(
+                      poets[index]['name']!,
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: index == selectedIndex
+                            ? Colors.blue[900]
+                            : Colors.black,
+                      ),
+                    ),
+                    subtitle: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SizedBox(height: 4),
+                        Text(
+                          "Роки життя: ${poets[index]['years']}",
+                          style: TextStyle(fontSize: 14, color: Colors.grey[700]),
+                        ),
+                        SizedBox(height: 2),
+                        Text(
+                          poets[index]['description']!,
+                          style: TextStyle(fontSize: 13, color: Colors.grey[600]),
+                        ),
+                        SizedBox(height: 2),
+                        Text(
+                          "Відомий твір: ${poets[index]['famous_work']}",
+                          style: TextStyle(
+                            fontSize: 13,
+                            fontStyle: FontStyle.italic,
+                            color: Colors.blue[800],
+                          ),
+                        ),
+                      ],
+                    ),
+                    trailing: Icon(
+                      Icons.arrow_forward_ios,
+                      color: index == selectedIndex
+                          ? Colors.blue[700]
+                          : Colors.grey[400],
+                      size: 16,
+                    ),
+                    isThreeLine: true,
+                  ),
+                ),
+              );
+            },
+          ),
+        ),
+      ],
+    );
+  }
+}
