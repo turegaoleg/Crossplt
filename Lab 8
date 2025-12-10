@@ -1,0 +1,151 @@
+import 'package:flutter/material.dart';
+
+void main() {
+  runApp(const MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      title: 'Лабораторна робота 8',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+      ),
+      home: const HomeScreen(),
+    );
+  }
+}
+
+class HomeScreen extends StatelessWidget {
+  const HomeScreen({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Гімн України'),
+        centerTitle: true,
+      ),
+      body: Container(
+        color: Colors.white,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Верхній відступ a=200
+            Container(height: 200, color: Colors.white),
+            
+            // Row з двома текстовими блоками, висота b=250
+            SizedBox(
+              height: 250,
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Лівий відступ n=3
+                  const SizedBox(width: 3),
+                  
+                  // Перший текстовий блок (жовтий)
+                  Expanded(
+                    flex: 7,
+                    child: CustomTextBlock(
+                      text: 'Ще не вмерла Україна, і слава, і воля, ще нам, браття молодії',
+                      backgroundColor: Colors.yellow,
+                      textColor: Colors.black,
+                      fontSize: 12,
+                    ),
+                  ),
+                  
+                  // Проміжок між блоками p=5
+                  const SizedBox(width: 5),
+                  
+                  // Другий текстовий блок (синій)
+                  Expanded(
+                    flex: 7,
+                    child: CustomTextBlock(
+                      text: 'Згинуть наші вороженьки, як роса на сонці, запануєм і ми, браття, у своїй сторонці.',
+                      backgroundColor: Colors.blue[300]!,
+                      textColor: Colors.black,
+                      fontSize: 12,
+                    ),
+                  ),
+                  
+                  // Правий відступ s=5
+                  const SizedBox(width: 5),
+                ],
+              ),
+            ),
+            
+            // Відступ між рядами c=150
+            Container(height: 150, color: Colors.white),
+            
+            // Третій текстовий блок
+            Padding(
+              padding: const EdgeInsets.only(left: 5, right: 5),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  CustomTextBlock(
+                    text: 'І покажем, що ми, браття, козацького роду.',
+                    backgroundColor: Colors.white,
+                    textColor: Colors.black,
+                    fontSize: 12,
+                    width: 200,
+                    height: 150,
+                  ),
+                ],
+              ),
+            ),
+            
+            // Залишковий простір
+            Expanded(child: Container()),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// Власний віджет успадкований від StatelessWidget
+// з передачею даних через конструктор
+class CustomTextBlock extends StatelessWidget {
+  final String text;
+  final Color backgroundColor;
+  final Color textColor;
+  final double fontSize;
+  final double? width;
+  final double? height;
+
+  const CustomTextBlock({
+    Key? key,
+    required this.text,
+    required this.backgroundColor,
+    required this.textColor,
+    this.fontSize = 12,
+    this.width,
+    this.height,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: width,
+      height: height,
+      decoration: BoxDecoration(
+        color: backgroundColor,
+        border: Border.all(color: Colors.black, width: 2),
+      ),
+      padding: const EdgeInsets.all(8),
+      alignment: Alignment.topLeft,
+      child: Text(
+        text,
+        style: TextStyle(
+          fontSize: fontSize,
+          color: textColor,
+        ),
+      ),
+    );
+  }
+}
